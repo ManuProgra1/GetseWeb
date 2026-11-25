@@ -1,0 +1,192 @@
+rules_version = '2';
+
+// ============================================================
+// Asambleas de Dios Getsemaní — Firestore Security Rules
+// Roles: administrador | editor | publico  (users/{uid}.rol)
+// ============================================================
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function userRole() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.rol
+        : '';
+    }
+
+    function isAdmin() {
+      return userRole() == 'administrador';
+    }
+
+    function isEditor() {
+      return isAdmin() || userRole() == 'editor';
+    }
+
+    function isText(value, min, max) {
+      return value is string && value.size() >= min && value.size() <= max;
+    }
+
+    // El editor de publicidad solo gestiona `advertising`.
+
+
+    // ---------------------------------------------------------
+    // users — perfiles y roles. La escritura de roles es solo
+    // para administradores (o Cloud Functions con Admin SDK).
+    // ---------------------------------------------------------
+    match /users/{uid} {
+      allow get: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow list: if isAdmin();
+      allow create, delete: if false;
+      allow update: if isAdmin()
+        && request.resource.data.rol in ['administrador', 'editor', 'publico']
+        && (request.auth.uid != uid || request.resource.data.rol == resource.data.rol);
+    }
+
+    // ---------------------------------------------------------
+    // events
+    // ---------------------------------------------------------
+    match /events/{eventId} {
+      function validEvent() {
+        let d = request.resource.data;
+        return isText(d.titulo, 3, 160)
+          && isText(d.descripcion, 0, 4000)
+          && isText(d.hora, 0, 40)
+          && isText(d.ubicacion, 0, 160)
+          && isText(d.categoria, 0, 60)
+          && d.estado in ['publicado', 'borrador']
+          && d.fecha is timestamp;
+      }
+
+      allow read: if resource.data.estado == 'publicado' || isAdmin();
+      allow create, update: if isAdmin() && validEvent();
+      allow delete: if isAdmin();
+    }
+
+    // ---------------------------------------------------------
+    // ministries
+    // ---------------------------------------------------------
+    match /ministries/{ministryId} {
+      function validMinistry() {
+        let d = request.resource.data;
+        return isText(d.nombre, 2, 120)
+          && isText(d.descripcion, 0, 6000)
+          && isText(d.objetivo, 0, 2000)
+          && d.estado in ['publicado', 'borrador']
+          && d.orden is int;
+      }
+
+      allow read: if resource.data.estado == 'publicado' || isAdmin();
+      allow create, update: if isAdmin() && validMinistry();
+      allow delete: if isAdmin();
+    }
+
+    // ---------------------------------------------------------
+    // history
+    // ---------------------------------------------------------
+    match /history/{entryId} {
+      function validEntry() {
+        let d = request.resource.data;
+        return isText(d.titulo, 2, 160)
+          && isText(d.descripcion, 0, 6000)
+          && isText(d.fecha, 0, 60)
+          && d.estado in ['publicado', 'borrador']
+          && d.orden is int;
+      }
+
+      allow read: if resource.data.estado == 'publicado' || isAdmin();
+      allow create, update: if isAdmin() && validEntry();
+      allow delete: if isAdmin();
+    }
+
+    // ---------------------------------------------------------
+    // gallery — fotografías públicas de ministerios y eventos
+    // ---------------------------------------------------------
+    match /gallery/{itemId} {
+      function validItem() {
+        let d = request.resource.data;
+        return isText(d.titulo, 0, 160)
+          && isText(d.imagen, 4, 2048)
+          && isText(d.ministerio, 0, 120);
+      }
+
+      allow read: if true;
+      allow create, update: if isAdmin() && validItem();
+      allow delete: if isAdmin();
+    }
+
+    // ---------------------------------------------------------
+    // advertising — anuncios y banners. El editor de publicidad
+    // puede gestionarlos; el público solo ve los publicados.
+    // ---------------------------------------------------------
+    match /advertising/{adId} {
+      function validAd() {
+        let d = request.resource.data;
+        return isText(d.titulo, 3, 120)
+          && isText(d.texto, 0, 600)
+          && isText(d.etiqueta, 0, 40)
+          && isText(d.imagen, 0, 2048)
+          && isText(d.enlace, 0, 2048)
+          && d.ubicacion in ['inicio', 'eventos', 'contacto']
+          && d.estado in ['publicado', 'borrador']
+          && d.orden is int;
+      }
+
+      allow read: if resource.data.estado == 'publicado' || isEditor();
+      allow create, update: if isEditor() && validAd();
+      allow delete: if isEditor();
+    }
+
+    // ---------------------------------------------------------
+    // contact_messages — cualquier visitante puede enviar el formulario;
+    // solo el administrador puede leer, editar y eliminar registros.
+    // ---------------------------------------------------------
+    match /contact_messages/{messageId} {
+      // Los registros de formularios son datos personales: solo el
+      // administrador puede leerlos, editarlos o eliminarlos. Los editores
+      // de publicidad no tienen acceso a esta colección.
+      function validFields(d) {
+        return isText(d.nombre, 2, 120)
+          && isText(d.email, 5, 160)
+          && d.email.matches('.+@.+[.].+')
+          && isText(d.telefono, 0, 40)
+          && isText(d.asunto, 0, 120)
+          && isText(d.mensaje, 10, 3000)
+          && isText(d.origen, 0, 40);
+      }
+
+      function validPublicCreate(d) {
+        return validFields(d)
+          && d.estado == 'nuevo'
+          && d.fecha == request.time;
+      }
+
+      function validAdminWrite(d) {
+        return validFields(d)
+          && d.estado in ['nuevo', 'leido', 'archivado']
+          && d.fecha is timestamp;
+      }
+
+      allow create: if validPublicCreate(request.resource.data)
+        || (isAdmin() && validAdminWrite(request.resource.data));
+      allow read, delete: if isAdmin();
+      allow update: if isAdmin() && validAdminWrite(request.resource.data);
+    }
+
+    // ---------------------------------------------------------
+    // settings — información pública de la iglesia.
+    // ---------------------------------------------------------
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Ninguna otra colección es accesible.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
