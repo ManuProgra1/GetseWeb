@@ -4,7 +4,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-// En GitHub Pages el sitio vive en un subdirectorio (/Getsemani-iglesia-/).
+// En GitHub Pages el sitio vive en un subdirectorio con el nombre del repositorio
+// (lo define VITE_BASE_PATH en el workflow de despliegue).
 const base = process.env.VITE_BASE_PATH || '/'
 
 /**
