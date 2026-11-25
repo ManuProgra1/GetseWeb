@@ -37,7 +37,7 @@ export default function IntroLoader() {
     >
       <div className="flex flex-col items-center px-8 text-center">
         <span className="grid h-14 w-14 place-items-center overflow-hidden rounded-full bg-bone">
-          <img src="/images/logo.jpg" alt="" className="h-full w-full object-cover" />
+          <img src="images/logo.jpg" alt="" className="h-full w-full object-cover" />
         </span>
         <p className="mt-7 font-display text-3xl tracking-tight text-bone sm:text-4xl">
           Getsemaní

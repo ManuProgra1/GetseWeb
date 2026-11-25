@@ -47,7 +47,7 @@ export default function HistoryTeaser() {
 
           <div className="order-1 lg:order-2">
             <ParallaxImage
-              src="/images/horizontal/horizontal-predica.jpg"
+              src="images/horizontal/horizontal-predica.jpg"
               alt="Predicación durante una reunión de la iglesia"
               className="aspect-[16/10] w-full"
               strength={5}

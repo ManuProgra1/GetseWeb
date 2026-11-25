@@ -151,7 +151,7 @@ export default function Eventos() {
           </>
         }
         lead="Conferencias, campañas, vigilias y actividades especiales de nuestros ministerios. Los cultos y reuniones de cada semana están en los horarios de la iglesia."
-        image="/images/horizontal/horizontal-alabanza.jpg"
+        image="images/horizontal/horizontal-alabanza.jpg"
         imageAlt="Equipo de alabanza sirviendo durante un culto"
         meta={[
           { label: 'Agenda', value: 'Actividades especiales y de ministerios' },

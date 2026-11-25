@@ -7,9 +7,12 @@ import { SettingsProvider } from './context/settings-context'
 import { ToastProvider } from './context/toast-context'
 import './styles/index.css'
 
+const basePath = import.meta.env.BASE_URL
+const basename = basePath.endsWith('/') ? basePath.slice(0, -1) || '/' : basePath
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename={basename}>
       <ToastProvider>
         <AuthProvider>
           <SettingsProvider>

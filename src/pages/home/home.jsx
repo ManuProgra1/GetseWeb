@@ -30,7 +30,7 @@ export default function Home() {
       <Statement />
 
       <ExpandMedia
-        image="/images/horizontal/horizontal-alabanza.jpg"
+        image="images/horizontal/horizontal-alabanza.jpg"
         alt="La congregación adorando en el templo"
         eyebrow="Un mismo corazón"
         title={

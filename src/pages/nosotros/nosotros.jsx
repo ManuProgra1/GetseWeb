@@ -75,7 +75,7 @@ export default function Nosotros() {
           </>
         }
         lead="Conoce quiénes somos, lo que creemos y el propósito que nos reúne domingo tras domingo."
-        image="/images/horizontal/horizontal-congregacion.jpg"
+        image="images/horizontal/horizontal-congregacion.jpg"
         imageAlt="Congregación de Asambleas de Dios Getsemaní reunida en el templo"
         meta={[
           { label: 'Movimiento', value: CHURCH.movement },
@@ -135,7 +135,7 @@ export default function Nosotros() {
 
           <div className="relative">
             <ParallaxImage
-              src="/images/iglesia.jpg"
+              src="images/iglesia.jpg"
               alt="Congregación reunida en el templo"
               className="aspect-[4/5] w-full"
               strength={6}

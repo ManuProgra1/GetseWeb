@@ -53,7 +53,7 @@ export default function Login() {
     <div className="grid min-h-screen bg-[#f4efdf] text-[#25342e] lg:grid-cols-2">
       <div className="relative hidden overflow-hidden bg-ink lg:block">
         <img
-          src="/images/iglesia.jpg"
+          src="images/iglesia.jpg"
           alt=""
           className="h-full w-full object-cover opacity-45"
         />

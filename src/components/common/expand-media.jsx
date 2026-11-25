@@ -8,7 +8,7 @@ import { useMediaQuery, useReducedMotion } from '../../hooks/use-reduced-motion'
  * y desactiva el efecto en móvil o con movimiento reducido.
  */
 export default function ExpandMedia({
-  image = '/images/iglesia.jpg',
+  image = 'images/iglesia.jpg',
   alt = '',
   eyebrow = 'Comunidad',
   title,

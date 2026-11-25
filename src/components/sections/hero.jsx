@@ -91,7 +91,7 @@ export default function Hero() {
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <img
           ref={imageRef}
-          src="/images/iglesia.jpg"
+          src="images/iglesia.jpg"
           alt="Congregación reunida en adoración en el templo de Asambleas de Dios Getsemaní"
           fetchPriority="high"
           className="h-full w-full scale-105 object-cover object-[center_45%] will-change-transform"

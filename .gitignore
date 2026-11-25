@@ -13,5 +13,6 @@ firebase-debug.log
 
 # entorno local / herramientas
 .dev-server.log
+token*.txt
 .cloud-attachments/
 .freebuff/

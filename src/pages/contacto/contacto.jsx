@@ -49,7 +49,7 @@ export default function Contacto() {
           </>
         }
         lead="Escríbenos, visítanos un domingo o pregúntanos cómo puedes formar parte de esta familia."
-        image="/images/horizontal/horizontal-iglesia.jpg"
+        image="images/horizontal/horizontal-iglesia.jpg"
         imageAlt="Interior del templo de Asambleas de Dios Getsemaní durante un culto"
         meta={[
           { label: 'Reuniones', value: settings.horarios[0] ? `${settings.horarios[0].dia} · ${settings.horarios[0].hora}` : 'Domingo' },

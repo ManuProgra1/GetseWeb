@@ -80,7 +80,7 @@ export default function Historia() {
           </>
         }
         lead="La fidelidad de Dios en la vida de nuestra congregación, contada con fe y con rigor: solo publicamos lo que podemos verificar."
-        image="/images/horizontal/horizontal-predica.jpg"
+        image="images/horizontal/horizontal-predica.jpg"
         imageAlt="Predicación durante un culto de la iglesia"
         meta={[
           { label: 'Archivo', value: 'Documentación en curso' },

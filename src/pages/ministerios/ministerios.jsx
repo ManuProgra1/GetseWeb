@@ -24,7 +24,7 @@ export default function Ministerios() {
           </>
         }
         lead="Cada ministerio tiene su propia identidad, su propio ritmo y una misma misión: amar a Dios y servir a las personas."
-        image="/images/horizontal/horizontal-orando.jpg"
+        image="images/horizontal/horizontal-orando.jpg"
         imageAlt="Congregación orando durante una reunión"
         meta={[
           { label: 'Ministerios activos', value: String(items.length) },

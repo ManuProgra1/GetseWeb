@@ -10,7 +10,7 @@ export default function Logo({ className = '', markOnly = false, size = 'md' }) 
         className={`grid ${dimension} shrink-0 place-items-center overflow-hidden rounded-full bg-bone ring-1 ring-white/10`}
       >
         <img
-          src={settings.logo || '/images/logo.jpg'}
+          src={settings.logo || 'images/logo.jpg'}
           alt=""
           width="48"
           height="48"
