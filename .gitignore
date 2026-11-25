@@ -1,0 +1,18 @@
+node_modules
+dist
+dist-ssr
+.env
+.env.local
+.env.*.local
+.tools
+*.local
+.DS_Store
+functions/node_modules
+functions/lib
+firebase-debug.log
+
+# entorno local / herramientas
+.dev-server.log
+token*.txt
+.cloud-attachments/
+.freebuff/

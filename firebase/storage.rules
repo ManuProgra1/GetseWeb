@@ -1,0 +1,42 @@
+rules_version = '2';
+
+// ============================================================
+// Firebase Storage — imágenes públicas, escritura del equipo
+// ============================================================
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isEditor() {
+      return request.auth != null
+        && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.rol in ['administrador', 'editor'];
+    }
+
+    function isAdmin() {
+      return request.auth != null
+        && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.rol == 'administrador';
+    }
+
+    function validImage() {
+      return request.resource.size < 6 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Publicidad: la gestiona el editor.
+    match /advertising/{fileName} {
+      allow read: if true;
+      allow create, update: if isEditor() && validImage();
+      allow delete: if isEditor();
+    }
+
+    // Resto de carpetas: solo el administrador.
+    match /{folder}/{fileName} {
+      allow read: if true;
+      allow create, update: if isAdmin() && validImage();
+      allow delete: if isAdmin();
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
